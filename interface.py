@@ -23,7 +23,7 @@ def save_note(text):
     with open('notes.txt', 'a+') as file:
        input = text.get('1.0', tk.END)
        file.write(input)
-       file.write('-' * 50)
+       file.write('-' * 50 + '\n')
 
 
 def clear_text(text):
@@ -36,6 +36,14 @@ def read_all(text):
             text.insert(tk.END, line)
 
 
+def read_last(text):
+    with open('C:\\VSC\\notes.txt') as file:
+        notes = file.read().split('-' * 50 + '\n')
+        notes = [note.strip() for note in notes if note]
+        text.delete('1.0', tk.END)
+        text.insert(tk.END, notes[-1])
+
+
 # window init
 root = tk.Tk()
 set_window(root)
@@ -43,45 +51,66 @@ set_window(root)
 # interface elements
 text = tk.Text(
     root,
-    font='monaco 17',
+    font='"ubuntu mono" 20',
     width=50,
-    height=10,
+    height=13,
     wrap=tk.WORD,
     padx=10,
     pady=10,
-    bg='gray',
-    fg='lime'
+    bg='#494949',
+    fg='#d4ff98'
 )
 
 button_save = tk.Button(
     root,
     text='Save',
     width=10,
-    font='monaco 16',
-    command=lambda: save_note(text)
+    font='"ubuntu mono" 16',
+    command=lambda: save_note(text),
+    bg='#494949',
+    fg='#d4ff98',
+    activebackground='gray'
 )
 
 button_readall = tk.Button(
     root,
     text='Read all',
     width=10,
-    font='monaco 16',
-    command=lambda: read_all(text)
+    font='"ubuntu mono" 16',
+    command=lambda: read_all(text),
+    bg='#494949',
+    fg='#d4ff98',
+    activebackground='gray'
 )
 
 button_clear = tk.Button(
     root,
     text='Clear',
     width=10,
-    font='monaco 16',
-    command=lambda: clear_text(text)
+    font='"ubuntu mono" 16',
+    command=lambda: clear_text(text),
+    bg='#494949',
+    fg='#d4ff98',
+    activebackground='gray'
+)
+
+button_readlast = tk.Button(
+    root,
+    text='Read last',
+    width=10,
+    font='"ubuntu mono" 16',
+    command=lambda: read_last(text),
+    bg='#494949',
+    fg='#d4ff98',
+    activebackground='gray'
 )
 
 # placing
-text.place(x=0, y=0)
-button_save.place(x=80, y=410)
-button_readall.place(x=280, y=410)
-button_clear.place(x=480, y=410)
+text.place(relx=0.5, rely=0.05, anchor='n')
+button_save.place(x=50, y=410)
+button_readall.place(x=217, y=410 )
+button_readlast.place(x=383, y=410)
+button_clear.place(x=550, y=410)
 
 # mainloop
 root.mainloop()
