@@ -37,11 +37,20 @@ def read_all(text):
 
 
 def read_last(text):
-    with open('C:\\VSC\\notes.txt') as file:
+    with open('notes.txt') as file:
         notes = file.read().split('-' * 50 + '\n')
         notes = [note.strip() for note in notes if note]
         text.delete('1.0', tk.END)
         text.insert(tk.END, notes[-1])
+
+
+# button colors
+def set_color(event):
+    event.widget.config(bg='#5a5a5a')
+
+
+def restore_color(event):
+    event.widget.config(bg='#494949')
 
 
 # window init
@@ -111,6 +120,16 @@ button_save.place(x=50, y=410)
 button_readall.place(x=217, y=410 )
 button_readlast.place(x=383, y=410)
 button_clear.place(x=550, y=410)
+
+# button colors change binding
+button_save.bind('<Enter>', set_color)
+button_save.bind('<Leave>', restore_color)
+button_readlast.bind('<Enter>', set_color)
+button_readlast.bind('<Leave>', restore_color)
+button_readall.bind('<Enter>', set_color)
+button_readall.bind('<Leave>', restore_color)
+button_clear.bind('<Enter>', set_color)
+button_clear.bind('<Leave>', restore_color)
 
 # mainloop
 root.mainloop()
