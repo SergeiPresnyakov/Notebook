@@ -6,7 +6,7 @@ def set_window(window):
     window.title('Interface')
     window.resizable(False, False)
 
-    height = 480
+    height = 500
     width = 720
 
     ws = window.winfo_screenwidth()
@@ -16,6 +16,12 @@ def set_window(window):
     y = int((hs/2) - (height/2))
 
     window.geometry(f'{width}x{height}+{x}+{y}')
+
+
+# notes content
+current_note_index = 0
+with open('notes.txt', 'a+') as file:
+    content = [line.strip() for line in file.read().split('-' * 50 + '\n') if line]
 
 
 # button logic
@@ -38,10 +44,28 @@ def read_all(text):
 
 def read_last(text):
     with open('notes.txt') as file:
+        global content
+        global current_note_index
+
         notes = file.read().split('-' * 50 + '\n')
         notes = [note.strip() for note in notes if note]
         text.delete('1.0', tk.END)
-        text.insert(tk.END, notes[-1])
+
+        if len(notes):
+            text.insert(tk.END, notes[-1])
+            content = notes
+            current_note_index = len(notes) - 1
+        else:
+            text.insert(tk.END, '[!] You have no notes yet.')
+
+
+def switch_message(i):
+    global current_note_index
+    if current_note_index + i < 0 or current_note_index + i == len(content):
+        i = 0
+    text.delete('1.0', tk.END)
+    text.insert(tk.END, content[current_note_index + i])
+    current_note_index += i
 
 
 # button colors
@@ -114,12 +138,36 @@ button_readlast = tk.Button(
     activebackground='gray'
 )
 
+button_next = tk.Button(
+    root,
+    text='>>',
+    width=10,
+    font='"ubuntu mono" 16',
+    bg='#494949',
+    fg='#d4ff98',
+    activebackground='gray',
+    command=lambda: switch_message(1)
+)
+
+button_prev = tk.Button(
+    root,
+    text='<<',
+    width=10,
+    font='"ubuntu mono" 16',
+    bg='#494949',
+    fg='#d4ff98',
+    activebackground='gray',
+    command=lambda: switch_message(-1)
+)
+
 # placing
-text.place(relx=0.5, rely=0.05, anchor='n')
+text.place(relx=0.5, rely=0.02, anchor='n')
 button_save.place(x=50, y=410)
 button_readall.place(x=217, y=410 )
 button_readlast.place(x=383, y=410)
 button_clear.place(x=550, y=410)
+button_prev.place(x=217, y=460)
+button_next.place(x=383, y=460)
 
 # button colors change binding
 button_save.bind('<Enter>', set_color)
@@ -130,6 +178,10 @@ button_readall.bind('<Enter>', set_color)
 button_readall.bind('<Leave>', restore_color)
 button_clear.bind('<Enter>', set_color)
 button_clear.bind('<Leave>', restore_color)
+button_next.bind('<Enter>', set_color)
+button_next.bind('<Leave>', restore_color)
+button_prev.bind('<Enter>', set_color)
+button_prev.bind('<Leave>', restore_color)
 
 # mainloop
 root.mainloop()
