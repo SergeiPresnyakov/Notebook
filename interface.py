@@ -1,3 +1,4 @@
+#!/usr/bin/python3.8
 import tkinter as tk
 
 
@@ -5,6 +6,7 @@ def set_window(window):
     """Window params"""
     window.title('Interface')
     window.resizable(False, False)
+    window.config(bg="#494949")
 
     height = 500
     width = 720
@@ -27,9 +29,9 @@ with open('notes.txt', 'a+') as file:
 # button logic
 def save_note(text):
     with open('notes.txt', 'a+') as file:
-       input = text.get('1.0', tk.END)
-       file.write(input)
-       file.write('-' * 50 + '\n')
+        input = text.get('1.0', tk.END)
+        file.write(input)
+        file.write('-' * 50 + '\n')
 
 
 def clear_text(text):
@@ -90,7 +92,7 @@ text = tk.Text(
     wrap=tk.WORD,
     padx=10,
     pady=10,
-    bg='#494949',
+    bg='#333333',
     fg='#d4ff98'
 )
 
