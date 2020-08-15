@@ -40,8 +40,22 @@ def clear_text(text):
 
 def read_all(text):
     with open('notes.txt') as file:
-        for line in file:
-            text.insert(tk.END, line)
+        global content
+        global current_note_index
+
+        notes = file.read().split('-' * 50 + '\n')
+        notes = [note.strip() for note in notes if note]
+        content = notes
+        total_notes_label.config(text=len(notes))
+        current_note_number_label.config(text='All')
+        text.delete('1.0', tk.END)
+
+        if len(notes):
+            for line in notes:
+                text.insert(tk.END, line + '\n--------------------------------------------------\n')
+        else:
+            text.insert(tk.END, '[!] You have no notes yet.')
+        
 
 
 def read_last(text):
@@ -51,12 +65,14 @@ def read_last(text):
 
         notes = file.read().split('-' * 50 + '\n')
         notes = [note.strip() for note in notes if note]
+        total_notes_label.config(text=len(notes))
         text.delete('1.0', tk.END)
 
         if len(notes):
             text.insert(tk.END, notes[-1])
             content = notes
             current_note_index = len(notes) - 1
+            current_note_number_label.config(text=current_note_index + 1)
         else:
             text.insert(tk.END, '[!] You have no notes yet.')
 
@@ -68,15 +84,16 @@ def switch_message(i):
     text.delete('1.0', tk.END)
     text.insert(tk.END, content[current_note_index + i])
     current_note_index += i
+    current_note_number_label.config(text=current_note_index + 1)
 
 
 # button colors
 def set_color(event):
-    event.widget.config(bg='#5a5a5a')
+    event.widget.config(activebackground='#333333', activeforeground='orange')
 
 
 def restore_color(event):
-    event.widget.config(bg='#494949')
+    event.widget.config(bg='#494949', fg='#d4ff98')
 
 
 # window init
@@ -104,7 +121,6 @@ button_save = tk.Button(
     command=lambda: save_note(text),
     bg='#494949',
     fg='#d4ff98',
-    activebackground='gray'
 )
 
 button_readall = tk.Button(
@@ -114,8 +130,7 @@ button_readall = tk.Button(
     font='"ubuntu mono" 16',
     command=lambda: read_all(text),
     bg='#494949',
-    fg='#d4ff98',
-    activebackground='gray'
+    fg='#d4ff98'
 )
 
 button_clear = tk.Button(
@@ -125,8 +140,7 @@ button_clear = tk.Button(
     font='"ubuntu mono" 16',
     command=lambda: clear_text(text),
     bg='#494949',
-    fg='#d4ff98',
-    activebackground='gray'
+    fg='#d4ff98'
 )
 
 button_readlast = tk.Button(
@@ -136,8 +150,7 @@ button_readlast = tk.Button(
     font='"ubuntu mono" 16',
     command=lambda: read_last(text),
     bg='#494949',
-    fg='#d4ff98',
-    activebackground='gray'
+    fg='#d4ff98'
 )
 
 button_next = tk.Button(
@@ -147,7 +160,6 @@ button_next = tk.Button(
     font='"ubuntu mono" 16',
     bg='#494949',
     fg='#d4ff98',
-    activebackground='gray',
     command=lambda: switch_message(1)
 )
 
@@ -158,8 +170,25 @@ button_prev = tk.Button(
     font='"ubuntu mono" 16',
     bg='#494949',
     fg='#d4ff98',
-    activebackground='gray',
     command=lambda: switch_message(-1)
+)
+
+total_notes_label = tk.Label(
+    root, 
+    font='"ubuntu mono" 20',
+    fg='#d4ff98',
+    bg='#494949',
+    text=len(content),
+    width=3
+)
+
+current_note_number_label = tk.Label(
+    root,
+    font='"ubuntu mono" 20',
+    fg='#d4ff98',
+    bg='#494949',
+    text=current_note_index + 1,
+    width=3
 )
 
 # placing
@@ -170,6 +199,8 @@ button_readlast.place(x=383, y=410)
 button_clear.place(x=550, y=410)
 button_prev.place(x=217, y=460)
 button_next.place(x=383, y=460)
+total_notes_label.place(x=100, y=460)
+current_note_number_label.place(x=600, y=460)
 
 # button colors change binding
 button_save.bind('<Enter>', set_color)
