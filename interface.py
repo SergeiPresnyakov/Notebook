@@ -81,15 +81,20 @@ def switch_message(i):
     global current_note_index
     if current_note_index + i < 0 or current_note_index + i == len(content):
         i = 0
-    text.delete('1.0', tk.END)
-    text.insert(tk.END, content[current_note_index + i])
-    current_note_index += i
-    current_note_number_label.config(text=current_note_index + 1)
+    try:    
+        text.delete('1.0', tk.END)
+        text.insert(tk.END, content[current_note_index + i])
+        current_note_index += i
+        current_note_number_label.config(text=current_note_index + 1)
+        
+    except IndexError:
+        text.delete('1.0', tk.END)
+        text.insert(tk.END, 'You have to read something first')
 
 
 # button colors
 def set_color(event):
-    event.widget.config(activebackground='#333333', activeforeground='orange')
+    event.widget.config(bg='#5d5d5d', activebackground='#333333', activeforeground='#d4ff98')
 
 
 def restore_color(event):
